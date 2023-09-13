@@ -41,7 +41,6 @@ class _CoreFunctions {
     return new Promise( (resolve, reject) => {
       try {
         const result = UrlFetchApp.fetch(self._buildUrl(url, { key: self._auth }), params);
-        console.log(result.getContentText())
         resolve(result.getContentText());
       } catch (err) {
         console.error(err);
