@@ -1,3 +1,21 @@
+// Copyright 2023 Martin Hawksey
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+/**
+ * CoreFunctions for TextServiceClient and DiscussServiceClients.
+ */
 class _CoreFunctions {
     /** 
    * @constructor 
@@ -20,9 +38,10 @@ class _CoreFunctions {
       'muteHttpExceptions': true
     };
 
-    return new Promise(function (resolve, reject) {
+    return new Promise( (resolve, reject) => {
       try {
-        var result = UrlFetchApp.fetch(self._buildUrl(url, { key: self._auth }), params);
+        const result = UrlFetchApp.fetch(self._buildUrl(url, { key: self._auth }), params);
+        console.log(result.getContentText())
         resolve(result.getContentText());
       } catch (err) {
         console.error(err);
@@ -32,7 +51,7 @@ class _CoreFunctions {
   }
 
   _buildUrl(url, params) {
-    const queryString = Object.keys(params).map(function (p) {
+    const queryString = Object.keys(params).map(p => {
       return [encodeURIComponent(p), encodeURIComponent(params[p])].join("=");
     }).join("&");
     return url + (url.indexOf('?') >= 0 ? '&' : '?') + queryString;
@@ -126,8 +145,18 @@ class _TextServiceClient extends CoreFunctions {
    *   sequence. The stop sequence will not be included as part of the response.
    */
   generateText(request) {
-    let { model, ...requestBody } = request;
-    return super._callAPI(requestBody, model+':generateText');
+    let { model, candidate_count, max_output_tokens, top_p, top_k, safety_settings, stop_sequences, ...req } = request;
+    const obj = {'prompt': req.prompt,
+                 'temperature': req.temperature,
+                 'candidate_count': (candidate_count) ? candidate_count : 1,
+                 'max_output_tokens': (max_output_tokens) ? max_output_tokens : 64,
+                 'top_p': (top_p) ? top_p : 0.95,
+                 'top_k': (top_k) ? top_k : 40
+    }
+    if(safety_settings) obj.safety_settings = safety_settings;
+    if(stop_sequences) obj.stop_sequences = stop_sequences;
+
+    return super._callAPI(obj, model+':generateText');
   }
 
 
@@ -201,8 +230,14 @@ class _DiscussServiceClient extends CoreFunctions{
   * region_tag:generativelanguage_v1beta2_generated_DiscussService_GenerateMessage_async
   */
   generateMessage(request) {
-    let { model, ...requestBody } = request;
-    return super._callAPI(requestBody, model+':generateMessage');
+    let { model, candidate_count,  top_p, top_k, ...req } = request;
+    const obj = {'prompt': req.prompt,
+                 'temperature': req.temperature,
+                 'candidate_count': (candidate_count) ? candidate_count : 1,
+                 'top_p': (top_p) ? top_p : 0.95,
+                 'top_k': (top_k) ? top_k : 40
+    }
+    return super._callAPI(obj, model+':generateMessage');
   }
 }
 var DiscussServiceClient = _DiscussServiceClient;
