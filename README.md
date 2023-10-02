@@ -43,6 +43,7 @@ The class is based on the [PaLM 2 API](https://ai.google/discover/palm2/) and us
 
 If everything has worked you should have a response recorded in the Execution log similar to the one below:
 
-![Example Execution Log](assets/image_2.png)Example execution log
+![Example Execution Log](assets/image_2.png)
+Example execution log
 
-You can continue to experiment with prompt text and setting in the code in the Apps Script editor.
+You can continue to experiment with prompt text and setting in the code in the Apps Script editor. For more context about this solution you can read [GenAI for Google Workspace: Exploring the PaLM 2 API and LLM capabilities in Google Sheets with Google Apps Script — Part 1](https://medium.com/cts-technologies/genai-for-google-workspace-exploring-the-palm-2-api-and-llm-capabilities-in-google-sheets-with-e3f166bf3c97)
